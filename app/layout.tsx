@@ -38,7 +38,7 @@ export default function RootLayout({
       </head>
       <body className={`${poppins.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider>
-          <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
+          <TooltipProvider delay={200}>{children}</TooltipProvider>
         </ThemeProvider>
       </body>
     </html>
