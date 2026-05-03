@@ -60,11 +60,11 @@ export function CheckoutDialog({
   const zoneConfig = state.zoneConfigs.find((z) => z.size === slot.size);
   const base = zoneConfig?.basePrice ?? BASE_PRICES[slot.size];
   const freeHours = state.appSettings?.freeHours ?? FREE_HOURS;
-  const excessRate = state.appSettings?.excessHourlyRate ?? EXCESS_HOURLY_RATE;
+  const excessRate = state.appSettings?.excessRate ?? EXCESS_HOURLY_RATE;
   const total = calculateFee(slot.size, entryTime, now, {
     basePrice: base,
     freeHours,
-    excessHourlyRate: excessRate,
+    excessRate,
   });
   const excess = Math.max(0, billedHours - freeHours);
   const excessFee = excess * excessRate;

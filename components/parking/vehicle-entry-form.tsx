@@ -681,7 +681,7 @@ export function VehicleEntryForm({
                       const zc = state.zoneConfigs.find((z) => z.size === size);
                       const bp = zc?.basePrice ?? BASE_PRICES[size];
                       const fh = state.appSettings?.freeHours ?? 3;
-                      const er = state.appSettings?.excessHourlyRate ?? 20;
+                      const er = state.appSettings?.excessRate ?? 20;
                       return `₱${bp} / ${fh} hrs · +₱${er}/hr after`;
                     })(),
                   },
