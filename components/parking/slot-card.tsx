@@ -64,9 +64,10 @@ export function SlotCard({
 }: SlotCardProps) {
   const {
     exitVehicle,
-    state: { appSettings },
+    state: { appSettings, zoneConfigs },
   } = useParking();
   const { freeHours, excessRate } = appSettings;
+  const basePrice = zoneConfigs.find((z) => z.size === slot.size)?.basePrice;
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [now, setNow] = useState(() => new Date());
   const style = STATUS_STYLES[slot.status];
@@ -223,6 +224,7 @@ export function SlotCard({
                 {calculateFee(slot.size, slot.vehicle.entryTime, now, {
                   freeHours,
                   excessRate,
+                  basePrice,
                 }).toLocaleString()}
               </p>
               <Button

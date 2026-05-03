@@ -578,7 +578,10 @@ export function VehicleEntryForm({
                       : `${s} – ${SIZE_META[s].label}`}
                   </p>
                   <p className="text-xs text-zinc-400 dark:text-white/40">
-                    ₱{BASE_PRICES[s]} · {SIZE_META[s].sqm} sqm
+                    ₱
+                    {state.zoneConfigs.find((z) => z.size === s)?.basePrice ??
+                      BASE_PRICES[s]}{" "}
+                    · {SIZE_META[s].sqm} sqm
                   </p>
                   <p
                     className={cn(
@@ -674,7 +677,13 @@ export function VehicleEntryForm({
                   },
                   {
                     label: "Rate",
-                    value: `₱${BASE_PRICES[size]} / 3 hrs · +₱20/hr after`,
+                    value: (() => {
+                      const zc = state.zoneConfigs.find((z) => z.size === size);
+                      const bp = zc?.basePrice ?? BASE_PRICES[size];
+                      const fh = state.appSettings?.freeHours ?? 3;
+                      const er = state.appSettings?.excessHourlyRate ?? 20;
+                      return `₱${bp} / ${fh} hrs · +₱${er}/hr after`;
+                    })(),
                   },
                 ].map(({ label, value }) => (
                   <div

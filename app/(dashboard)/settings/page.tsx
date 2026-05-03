@@ -706,12 +706,20 @@ export default function SettingsPage() {
                     </span>
                     <div className="space-y-1 flex-1">
                       <Input
-                        type="number"
-                        min={0}
-                        value={zone.base_price}
-                        onChange={(e) =>
-                          updateZone(zone.zone, "base_price", e.target.value)
+                        type="text"
+                        inputMode="numeric"
+                        value={
+                          zone.base_price === 0 ? "" : String(zone.base_price)
                         }
+                        placeholder="0"
+                        onChange={(e) => {
+                          const raw = e.target.value.replace(/[^0-9]/g, "");
+                          updateZone(
+                            zone.zone,
+                            "base_price",
+                            raw === "" ? "0" : raw,
+                          );
+                        }}
                         className={cn(
                           validationErrors[`${zone.zone}_price`] &&
                             "border-red-400",

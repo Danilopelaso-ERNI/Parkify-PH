@@ -32,7 +32,7 @@ export function CheckoutDialog({
   open,
   onOpenChange,
 }: CheckoutDialogProps) {
-  const { exitVehicle } = useParking();
+  const { exitVehicle, state } = useParking();
   const [now, setNow] = useState(new Date());
   const [confirmed, setConfirmed] = useState(false);
 
@@ -57,10 +57,17 @@ export function CheckoutDialog({
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
   const billedHours = Math.max(1, Math.ceil(ms / (1000 * 60 * 60)));
-  const base = BASE_PRICES[slot.size];
-  const total = calculateFee(slot.size, entryTime, now);
-  const excess = Math.max(0, billedHours - FREE_HOURS);
-  const excessFee = excess * EXCESS_HOURLY_RATE;
+  const zoneConfig = state.zoneConfigs.find((z) => z.size === slot.size);
+  const base = zoneConfig?.basePrice ?? BASE_PRICES[slot.size];
+  const freeHours = state.appSettings?.freeHours ?? FREE_HOURS;
+  const excessRate = state.appSettings?.excessHourlyRate ?? EXCESS_HOURLY_RATE;
+  const total = calculateFee(slot.size, entryTime, now, {
+    basePrice: base,
+    freeHours,
+    excessHourlyRate: excessRate,
+  });
+  const excess = Math.max(0, billedHours - freeHours);
+  const excessFee = excess * excessRate;
 
   function handleConfirm() {
     setConfirmed(true);

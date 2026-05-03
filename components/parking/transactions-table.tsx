@@ -30,11 +30,14 @@ type SortDir = "asc" | "desc";
 
 export function TransactionsTable() {
   const { state } = useParking();
-  const { appSettings } = state;
-  const rateOverrides = {
+  const { appSettings, zoneConfigs } = state;
+  const getBasePrice = (size: string) =>
+    zoneConfigs.find((z) => z.size === size)?.basePrice;
+  const rateOverrides = (size: string) => ({
     freeHours: appSettings.freeHours,
     excessRate: appSettings.excessRate,
-  };
+    basePrice: getBasePrice(size),
+  });
   const [filter, setFilter] = useState<FilterStatus>("all");
   const [search, setSearch] = useState("");
   const [mounted, setMounted] = useState(false);
@@ -83,11 +86,11 @@ export function TransactionsTable() {
       if (sortKey === "fee") {
         const fa =
           a.status === "active"
-            ? calculateFee(a.size, a.entryTime, now, rateOverrides)
+            ? calculateFee(a.size, a.entryTime, now, rateOverrides(a.size))
             : (a.amount ?? 0);
         const fb =
           b.status === "active"
-            ? calculateFee(b.size, b.entryTime, now, rateOverrides)
+            ? calculateFee(b.size, b.entryTime, now, rateOverrides(b.size))
             : (b.amount ?? 0);
         return dir * (fa - fb);
       }
@@ -261,7 +264,12 @@ export function TransactionsTable() {
               filtered.slice(0, visibleCount).map((txn) => {
                 const fee =
                   txn.status === "active"
-                    ? calculateFee(txn.size, txn.entryTime, now, rateOverrides)
+                    ? calculateFee(
+                        txn.size,
+                        txn.entryTime,
+                        now,
+                        rateOverrides(txn.size),
+                      )
                     : (txn.amount ?? 0);
                 const duration =
                   txn.status === "active"
