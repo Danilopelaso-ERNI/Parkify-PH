@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   Car,
   CheckCircle2,
@@ -27,7 +26,7 @@ interface StatCardProps {
 
 function StatCardSkeleton() {
   return (
-    <div className="relative overflow-hidden rounded-2xl border dark:border-white/10 border-black/8 dark:bg-white/5 bg-black/5 backdrop-blur-md p-5">
+    <div className="relative overflow-hidden rounded-2xl border dark:border-white/10 border-black/8 dark:bg-white/5 bg-black/5 backdrop-blur-md p-5 max-h-35">
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <Skeleton className="h-2.5 w-16" />
@@ -54,7 +53,7 @@ function StatCard({
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-2xl border p-5",
+        "group relative overflow-hidden rounded-2xl border p-5 xl:p-7 max-h-35 xl:max-h-none",
         "dark:bg-white/8 bg-white/70 backdrop-blur-md shadow-lg",
         "transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:hover:bg-white/12 hover:bg-white/90",
         borderColor,
@@ -73,31 +72,31 @@ function StatCard({
 
       <div className="relative flex items-start justify-between">
         <div className="space-y-1">
-          <p className="text-[11px] font-semibold uppercase tracking-widest dark:text-white/50 text-slate-500">
+          <p className="text-[11px] xl:text-xs font-semibold uppercase tracking-widest dark:text-white/50 text-slate-500">
             {label}
           </p>
           <p
             className={cn(
-              "text-3xl font-extrabold tracking-tight tabular-nums",
+              "text-3xl xl:text-4xl 2xl:text-5xl font-extrabold tracking-tight tabular-nums",
               valueColor,
             )}
           >
             {value}
           </p>
           {sub && (
-            <p className="text-xs font-medium dark:text-white/35 text-slate-400">
+            <p className="text-xs xl:text-sm font-medium dark:text-white/35 text-slate-400">
               {sub}
             </p>
           )}
         </div>
         <div
           className={cn(
-            "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl shadow-md",
+            "flex h-11 w-11 xl:h-14 xl:w-14 shrink-0 items-center justify-center rounded-xl xl:rounded-2xl shadow-md",
             "transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3",
             iconGradient,
           )}
         >
-          <Icon className="h-5 w-5 text-white drop-shadow" />
+          <Icon className="h-5 w-5 xl:h-6 xl:w-6 text-white drop-shadow" />
         </div>
       </div>
     </div>
@@ -106,13 +105,7 @@ function StatCard({
 
 export function StatsOverview() {
   const { state } = useParking();
-  const { slots, transactions, appSettings } = state;
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setMounted(true), 600);
-    return () => clearTimeout(t);
-  }, []);
+  const { slots, transactions, appSettings, loading } = state;
 
   const total = slots.length;
   const available = slots.filter((s) => s.status === "available").length;
@@ -138,7 +131,7 @@ export function StatsOverview() {
     (t) => t.status === "completed",
   ).length;
 
-  if (!mounted) {
+  if (loading) {
     return (
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (

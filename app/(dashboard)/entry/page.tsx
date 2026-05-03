@@ -25,7 +25,7 @@ export default async function EntryPage(props: {
       />
 
       <div className="flex flex-1 justify-center p-6 pt-8">
-        <div className="w-full max-w-md rounded-2xl border dark:border-white/10 border-slate-200 dark:bg-white/5 bg-white dark:backdrop-blur-md p-8 shadow-sm dark:shadow-none">
+        <div className="w-full max-w-md xl:max-w-xl 2xl:max-w-2xl rounded-2xl border dark:border-white/10 border-slate-200 dark:bg-white/5 bg-white dark:backdrop-blur-md p-8 xl:p-10 2xl:p-12 shadow-sm dark:shadow-none">
           <VehicleEntryForm initialSlotId={sp.slot} initialSize={initialSize} />
         </div>
       </div>

@@ -144,8 +144,27 @@ export function VehicleEntryForm({
       const { size: detectedSize, plate: detectedPlate } =
         await detectVehicleFromImage(file);
       setSize(detectedSize);
-      if (detectedPlate) setPlate(detectedPlate.toUpperCase());
-      setStep("confirm");
+      if (detectedPlate) {
+        setPlate(detectedPlate.toUpperCase());
+      } else {
+        // Plate not visible in photo (e.g. front-facing motorcycle shot) — stay
+        // on the plate step so the user can enter it manually.
+        setDetectError(
+          `${detectedSize} detected — plate not visible in photo. Please enter the plate number manually.`,
+        );
+      }
+      // Zone mismatch: pre-selected slot is for a different vehicle size
+      if (overrideSlotId) {
+        const overrideSlot = state.slots.find((s) => s.id === overrideSlotId);
+        if (overrideSlot && overrideSlot.size !== detectedSize) {
+          setOverrideSlotId(null);
+          setEntryError(
+            `Detected ${detectedSize} vehicle — Zone ${overrideSlot.zone} is for ${overrideSlot.size} vehicles only. Reassigned to the nearest available ${detectedSize} slot.`,
+          );
+        }
+      }
+      // Only skip to confirm if we have a plate; otherwise stay so user can type it
+      if (detectedPlate) setStep("confirm");
     } catch (err) {
       setDetectError(err instanceof Error ? err.message : "Detection failed");
     } finally {
@@ -163,6 +182,16 @@ export function VehicleEntryForm({
     try {
       const { size: detectedSize } = await detectVehicleFromImage(file);
       setSize(detectedSize);
+      // Zone mismatch: pre-selected slot is for a different vehicle size
+      if (overrideSlotId) {
+        const overrideSlot = state.slots.find((s) => s.id === overrideSlotId);
+        if (overrideSlot && overrideSlot.size !== detectedSize) {
+          setOverrideSlotId(null);
+          setEntryError(
+            `Detected ${detectedSize} vehicle — Zone ${overrideSlot.zone} is for ${overrideSlot.size} vehicles only. Reassigned to the nearest available ${detectedSize} slot.`,
+          );
+        }
+      }
       setStep("confirm");
     } catch (err) {
       setDetectError(err instanceof Error ? err.message : "Detection failed");

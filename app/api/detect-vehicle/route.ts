@@ -86,20 +86,29 @@ export async function POST(req: NextRequest) {
         mimeType: mimeType as "image/jpeg" | "image/png" | "image/webp",
       },
     },
-    `Analyze this vehicle image and respond with JSON only, no markdown.
+    `Analyze this image and respond with JSON only, no markdown.
 
-1. size: Classify the vehicle into exactly one: XL (SUV/van/pickup), L (sedan/hatchback/coupe), M (compact/city car), Motorcycle (motorcycle/scooter)
-2. plate: Read the license plate number exactly as shown. If not visible or unreadable, return null.
+First determine if this is a valid registerable motor vehicle (car, SUV, van, pickup truck, sedan, hatchback, motorcycle, scooter). Reject anything that is not a real road-legal motor vehicle — including bicycles, carts, toys, animals, people, non-vehicle objects, or unrecognizable images.
+
+1. valid: true if it is a real motor vehicle, false otherwise.
+2. size: If valid, classify into exactly one: XL (SUV/van/pickup/truck), L (sedan/hatchback/coupe), M (compact/city car), Motorcycle (motorcycle/scooter). If not valid, return null.
+3. plate: Read the license plate number exactly as shown. If not visible or unreadable, return null.
+4. reason: If valid is false, write a short, specific one-sentence reason explaining what was detected and why it cannot be accepted (e.g. "Bicycle detected — not a registered motor vehicle.", "No vehicle found in image.", "Shopping cart detected — not a motor vehicle.", "Person detected — no vehicle in image."). If valid is true, return null.
 
 Respond with ONLY this JSON format:
-{"size": "L", "plate": "ABC-1234"}
-or if no plate visible:
-{"size": "XL", "plate": null}`,
+{"valid": true, "size": "L", "plate": "ABC-1234", "reason": null}
+or if not a valid vehicle:
+{"valid": false, "size": null, "plate": null, "reason": "Bicycle detected — not a registered motor vehicle."}`,
   ]);
 
   const raw = result.response.text().trim();
 
-  let parsed: { size?: string; plate?: string | null } = {};
+  let parsed: {
+    valid?: boolean;
+    size?: string;
+    plate?: string | null;
+    reason?: string | null;
+  } = {};
   try {
     // Strip markdown code fences if Gemini wraps in ```json
     const clean = raw
@@ -109,6 +118,12 @@ or if no plate visible:
     parsed = JSON.parse(clean);
   } catch {
     // ignore parse error, fallback below
+  }
+
+  if (parsed.valid === false) {
+    const reason =
+      parsed.reason?.trim() || "No valid motor vehicle detected in the image.";
+    return NextResponse.json({ error: reason }, { status: 422 });
   }
 
   const detected = VALID_SIZES.find(

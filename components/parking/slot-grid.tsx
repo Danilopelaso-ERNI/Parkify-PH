@@ -3,6 +3,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SlotCard } from "./slot-card";
 import { useParking } from "@/store/parking-store";
 import { VehicleIcon } from "@/components/shared/vehicle-icon";
@@ -33,9 +34,50 @@ function DrivingLane() {
   );
 }
 
+function SlotGridSkeleton() {
+  return (
+    <div className="space-y-3">
+      {/* Tab skeleton */}
+      <div className="flex gap-1.5 p-1.5 rounded-2xl dark:bg-white/8 bg-zinc-100 border dark:border-white/10 border-zinc-200">
+        {[...Array(4)].map((_, i) => (
+          <Skeleton key={i} className="h-8 w-24 rounded-xl" />
+        ))}
+      </div>
+      {/* Zone panel skeleton */}
+      <div className="rounded-2xl border dark:border-zinc-700/50 border-zinc-200 overflow-hidden">
+        <div className="flex items-center justify-between dark:bg-zinc-800 bg-zinc-100 border-b dark:border-zinc-700/80 border-zinc-200 px-5 py-3">
+          <div className="flex items-center gap-2.5">
+            <Skeleton className="h-8 w-8 rounded-lg" />
+            <div className="space-y-1">
+              <Skeleton className="h-3.5 w-32" />
+              <Skeleton className="h-2.5 w-24" />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Skeleton className="h-6 w-16 rounded-full" />
+            <Skeleton className="h-6 w-16 rounded-full" />
+          </div>
+        </div>
+        <div className="dark:bg-zinc-900 bg-zinc-50 p-4">
+          <div
+            className="grid gap-1.5"
+            style={{ gridTemplateColumns: "repeat(5, minmax(0, 1fr))" }}
+          >
+            {[...Array(10)].map((_, i) => (
+              <Skeleton key={i} className="h-36 rounded-lg" />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function SlotGrid({ onSlotSelect }: SlotGridProps) {
   const { state } = useParking();
-  const zoneConfigs = state.zoneConfigs;
+  const { zoneConfigs, loading } = state;
+
+  if (loading) return <SlotGridSkeleton />;
 
   return (
     <Tabs defaultValue="A" className="w-full">
@@ -90,7 +132,7 @@ export function SlotGrid({ onSlotSelect }: SlotGridProps) {
 
         return (
           <TabsContent key={cfg.zone} value={cfg.zone} className="mt-3">
-            <div className="rounded-2xl overflow-hidden shadow-xl border dark:border-zinc-700/50 border-zinc-200">
+            <div className="rounded-2xl shadow-xl border dark:border-zinc-700/50 border-zinc-200">
               {/* Zone info header */}
               <div className="flex flex-wrap items-center justify-between gap-2 dark:bg-zinc-800 bg-zinc-100 border-b dark:border-zinc-700/80 border-zinc-200 px-5 py-3">
                 <div className="flex items-center gap-2.5">
@@ -138,14 +180,14 @@ export function SlotGrid({ onSlotSelect }: SlotGridProps) {
 
               {/* Parking lot surface */}
               <div
-                className="dark:bg-zinc-900 bg-zinc-50 px-4 pb-4 pt-3"
+                className="dark:bg-zinc-900 bg-zinc-50 px-4 pb-4 pt-6 rounded-b-2xl"
                 style={{
                   backgroundImage: `radial-gradient(circle at 1px 1px, rgba(0,0,0,0.06) 1px, transparent 0)`,
                   backgroundSize: "24px 24px",
                 }}
               >
                 <ScrollArea className="max-h-95 w-full overflow-auto">
-                  <div className="space-y-0 pb-1 pr-1">
+                  <div className="space-y-0 pb-1 pr-1 mt-2">
                     {rowPairs.map(([topRow, bottomRow], pairIdx) => (
                       <div key={pairIdx} className={pairIdx > 0 ? "mt-4" : ""}>
                         {/* Top bank — curb side at top */}

@@ -19,9 +19,9 @@ export function AppHeader({ title, description }: AppHeaderProps) {
   }, []);
 
   return (
-    <header className="sticky top-0 z-20 flex items-center justify-between border-b dark:border-zinc-800 border-zinc-200 dark:bg-zinc-900 bg-white px-6 py-3.5 shadow-sm">
+    <header className="sticky top-0 z-20 flex items-center justify-between border-b dark:border-zinc-800 border-zinc-200 dark:bg-zinc-900 bg-white px-6 xl:px-8 py-3.5 xl:py-5 shadow-sm">
       <div>
-        <h1 className="text-xl font-bold dark:text-white text-slate-900 tracking-tight">
+        <h1 className="text-xl xl:text-2xl 2xl:text-3xl font-bold dark:text-white text-slate-900 tracking-tight">
           {title}
         </h1>
         {description && (

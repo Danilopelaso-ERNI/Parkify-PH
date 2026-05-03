@@ -15,7 +15,7 @@ export default function DashboardPage() {
         description="Real-time slot availability and management"
       />
 
-      <div className="space-y-6 p-6">
+      <div className="space-y-6 xl:space-y-8 p-6 xl:p-8 2xl:p-10">
         {/* Stats overview */}
         <StatsOverview />
 

@@ -40,17 +40,17 @@ export function AppSidebar() {
   }
 
   return (
-    <aside className="flex h-screen w-60 shrink-0 flex-col border-r dark:border-zinc-800 border-zinc-200 dark:bg-zinc-900 bg-white">
+    <aside className="flex h-screen w-60 xl:w-72 2xl:w-80 shrink-0 flex-col border-r dark:border-zinc-800 border-zinc-200 dark:bg-zinc-900 bg-white">
       {/* Brand */}
-      <div className="flex items-center gap-3 border-b dark:border-zinc-800 border-zinc-200 px-5 py-4.5">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-blue-500 to-blue-700 shadow-lg shadow-blue-900/40">
-          <ParkingSquare className="h-4.5 w-4.5 text-white" />
+      <div className="flex items-center gap-3 border-b dark:border-zinc-800 border-zinc-200 px-5 py-4.5 xl:px-6 xl:py-5">
+        <div className="flex h-9 w-9 xl:h-11 xl:w-11 items-center justify-center rounded-xl bg-linear-to-br from-blue-500 to-blue-700 shadow-lg shadow-blue-900/40">
+          <ParkingSquare className="h-4.5 w-4.5 xl:h-5 xl:w-5 text-white" />
         </div>
         <div>
-          <p className="text-sm font-bold tracking-wide dark:text-white text-slate-900">
+          <p className="text-sm xl:text-base font-bold tracking-wide dark:text-white text-slate-900">
             Parkify PH
           </p>
-          <p className="text-[10px] dark:text-zinc-500 text-slate-400">
+          <p className="text-[10px] xl:text-xs dark:text-zinc-500 text-slate-400">
             Slot Management System
           </p>
         </div>
@@ -68,7 +68,7 @@ export function AppSidebar() {
               key={href}
               href={href}
               className={cn(
-                "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                "group flex items-center gap-3 rounded-xl px-3 py-2.5 xl:px-4 xl:py-3 text-sm xl:text-base font-medium transition-all duration-200",
                 isActive
                   ? "bg-linear-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-900/40"
                   : "dark:text-zinc-400 text-zinc-600 dark:hover:bg-zinc-800 hover:bg-zinc-100 dark:hover:text-zinc-100 hover:text-zinc-900 hover:translate-x-0.5",

@@ -138,15 +138,16 @@ export function SlotCard({
             )}
           />
           {/* Top corner: slot label + overstay badge */}
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[9px] font-bold dark:text-white/40 text-zinc-400 tracking-wider">
-              {slot.zone}-{String(slot.number).padStart(2, "0")}
-            </span>
-            <div className="flex items-center gap-1">
+          <div className="flex items-start justify-between mb-1 gap-0.5">
+            {/* Left: slot ID stacked above overstay badge */}
+            <div className="flex flex-col gap-0.5 min-w-0">
+              <span className="text-[9px] font-bold dark:text-white/40 text-zinc-400 tracking-wider leading-none">
+                {slot.zone}-{String(slot.number).padStart(2, "0")}
+              </span>
               {isOverstay && (
                 <span
                   className={cn(
-                    "flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[8px] font-bold",
+                    "flex items-center gap-0.5 rounded-sm px-1 py-0.5 text-[7px] font-bold w-fit leading-none",
                     overstaySeverity === 1 &&
                       "bg-orange-400/20 text-orange-700 dark:text-orange-400 animate-pulse",
                     overstaySeverity === 2 &&
@@ -155,24 +156,25 @@ export function SlotCard({
                       "bg-amber-500/25 text-amber-800 dark:text-amber-400 animate-[pulse_0.75s_ease-in-out_infinite]",
                   )}
                 >
-                  <AlertTriangle className="h-2 w-2" />
+                  <AlertTriangle className="h-2 w-2 shrink-0" />
                   OVERSTAY
                 </span>
               )}
-              <span
-                className={cn(
-                  "h-1.5 w-1.5 rounded-full",
-                  overstaySeverity === 3
-                    ? "bg-amber-500 animate-[pulse_0.75s_ease-in-out_infinite]"
-                    : overstaySeverity >= 1
-                      ? "bg-orange-400 animate-pulse shadow-sm shadow-orange-400/60"
-                      : style.dot,
-                  slot.status === "occupied" &&
-                    !isOverstay &&
-                    "animate-pulse shadow-sm shadow-blue-400/60",
-                )}
-              />
             </div>
+            {/* Right: status dot */}
+            <span
+              className={cn(
+                "h-1.5 w-1.5 rounded-full shrink-0 mt-0.5",
+                overstaySeverity === 3
+                  ? "bg-amber-500 animate-[pulse_0.75s_ease-in-out_infinite]"
+                  : overstaySeverity >= 1
+                    ? "bg-orange-400 animate-pulse shadow-sm shadow-orange-400/60"
+                    : style.dot,
+                slot.status === "occupied" &&
+                  !isOverstay &&
+                  "animate-pulse shadow-sm shadow-blue-400/60",
+              )}
+            />
           </div>
 
           {/* Vehicle icon — side profile */}
@@ -199,22 +201,24 @@ export function SlotCard({
           )}
 
           {slot.status === "occupied" && slot.vehicle && (
-            <div className="space-y-0.5">
-              <p className="truncate text-center text-[9px] font-bold dark:text-white/80 text-zinc-800 tracking-wider">
+            <div className="space-y-px overflow-hidden">
+              <p className="truncate text-center text-[9px] font-bold dark:text-white/80 text-zinc-800 tracking-wider leading-tight">
                 {slot.vehicle.plate}
               </p>
               <div
                 className={cn(
-                  "flex items-center justify-center gap-0.5 text-[9px]",
+                  "flex items-center justify-center gap-0.5 text-[8px] leading-tight",
                   isOverstay
                     ? "dark:text-orange-400/80 text-orange-700"
                     : "dark:text-blue-400/80 text-blue-500",
                 )}
               >
-                <Clock className="h-2 w-2" />
-                <span>{formatElapsed(slot.vehicle.entryTime)}</span>
+                <Clock className="h-2 w-2 shrink-0" />
+                <span className="truncate">
+                  {formatElapsed(slot.vehicle.entryTime)}
+                </span>
               </div>
-              <p className="text-center text-[9px] font-bold dark:text-emerald-400 text-emerald-600">
+              <p className="text-center text-[9px] font-bold dark:text-emerald-400 text-emerald-600 leading-tight">
                 ₱
                 {calculateFee(slot.size, slot.vehicle.entryTime, now, {
                   freeHours,
@@ -225,7 +229,7 @@ export function SlotCard({
                 size="sm"
                 variant="outline"
                 className={cn(
-                  "mt-0.5 h-5 w-full bg-transparent text-[9px] active:scale-95 transition-all duration-150",
+                  "mt-px h-5 w-full bg-transparent text-[9px] active:scale-95 transition-all duration-150",
                   isOverstay
                     ? "border-amber-400/40 text-amber-700 dark:text-amber-400 hover:bg-amber-600! hover:text-white! hover:border-amber-600!"
                     : "border-blue-400/40 text-blue-400 hover:bg-blue-500! hover:text-white! hover:border-blue-500!",
